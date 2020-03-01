@@ -10,9 +10,17 @@ from collections import Counter
 
 def main():
     if len(sys.argv[1:]) >= 1:
-        if os.path.isfile(sys.argv[1]):
+        if os.path.isfile(sys.argv[1]) and os.path.isfile(sys.argv[2]) :
+            with open(sys.argv[2], "r", encoding="utf8") as stop_file:
+                stop_words_file = stop_file.read()
+                stop_words_doc = stop_words_file.replace('\n',' ')
+                stop_words_list = stop_words_doc.split(" ")
+                print(" stop_words_list ",stop_words_list)
+                print(" stop_words_list length ",len(stop_words_list))
+                # print(stop_words_doc)
             with open(sys.argv[1], "r", encoding="utf8") as file:
-                doc = data_processing(file)
+                print("\nprogress")
+                doc = data_processing(file,stop_words_list)
             letter_frequency(doc)
             print("\n")
             number_of_words(doc)
@@ -24,23 +32,27 @@ def main():
             print("The file does not exist!")
             sys.exit(1)
     else:
-        print("No argument provided. Please provide at least the shakespeare.txt.")
+        print("No argument provided. Please provide at least the shakespeare.txt and stop_words.txt ")
+        print("use: python3 sha_wf.py ../data/shakespeare.txt ../data/stop_words.txt ")
         sys.exit(1)
 
 
 def output_log(line):
     print(line)
-    if len(sys.argv[1:]) == 2:
-        with open(sys.argv[2], "a", encoding="utf8") as output:
+    if len(sys.argv[1:]) == 3:
+        with open(sys.argv[3], "a", encoding="utf8") as output:
             output.write(line + "\n")
 
 
 # The idea is to replace everything that we don't need with a space character
 # and finally replace all spaces created with a simple space to get the words
 #  处理停用词
-def data_processing(file):
+def data_processing(file,stop_words_list):
     shakespeare = file.read()
+    # print(shakespeare)
+    # 替换换行位空格
     doc = shakespeare.replace('\n', ' ')
+    # 开始处理停用词
     doc = re.sub(r"\d", " ", doc)  # remove all digits
     doc = re.sub(r"[^\w\s]", " ", doc)  # remove punctuations
 
@@ -48,6 +60,12 @@ def data_processing(file):
     doc = re.sub(r"\sd\s", " ", doc)  # remove d from words (because of 'd words)
     doc = re.sub(r"\ss\s", " ", doc)  # remove s from words (because of 's words)
     doc = re.sub(r"\so\s", " ", doc)  # remove o from words (because of 'o words)
+
+    doc = re.sub(r"the", " ", doc)  # remove o from words (because of 'o words)
+    for i in range(0,len(stop_words_list)):
+        doc = re.sub(r"the", " ", doc)  # remove stop words
+
+        
 
     doc = re.sub(r"\s+", " ", doc)  # substitute all spaces with a single space
     doc = doc.lower()  # lowercase every word
@@ -98,4 +116,5 @@ def common_words(doc):
 
 
 if __name__ == '__main__':
+    print("\d")
     main()
