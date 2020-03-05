@@ -63,8 +63,10 @@ def data_processing(file,stop_words_list):
 
     doc = re.sub(r"the", " ", doc)  # remove o from words (because of 'o words)
     for i in range(0,len(stop_words_list)):
-        print(stop_words_list[i])
-        doc = re.sub(r""+stop_words_list[i], " ", doc)  # remove stop words
+        # print(i,stop_words_list[i])
+        # print(stop_words_list[47])
+        doc = re.sub(stop_words_list[i], " ", doc)  # remove stop words
+    # doc = re.sub(stop_words_list[47], " ", doc)  # remove stop words
 
         
 
